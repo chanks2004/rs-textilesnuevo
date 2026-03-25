@@ -16,7 +16,7 @@ export function PageOverlay({ isVisible }: PageOverlayProps) {
     >
       <div className="flex flex-col items-center gap-4">
         <span className="text-2xl font-semibold tracking-tight text-exvia-black animate-pulse">
-          {siteConfig.title || 'Loading'}
+          {siteConfig.name || 'Loading'}
         </span>
         <div className="w-24 h-0.5 bg-exvia-subtle rounded-full overflow-hidden">
           <div className="h-full bg-exvia-black animate-[slide_1s_ease-in-out_infinite] w-1/3 rounded-full" />
