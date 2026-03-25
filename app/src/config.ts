@@ -482,14 +482,17 @@ export const howItWorksConfig = {
   description: "We help you move faster and safer by simplifying sourcing, customization, and production.",
   steps: [
     {
+      number: "01",
       title: "Choose your product",
       description: "Select the apparel style and quality level that best fits your business or brand."
     },
     {
+      number: "02",
       title: "Customize if needed",
       description: "Add printing, embroidery, or private label details if your project requires it."
     },
     {
+      number: "03",
       title: "Request your quote",
       description: "Send us your requirements and we will guide you through the next steps."
     }
@@ -508,10 +511,50 @@ export const customizationConfig = {
     { name: "Packaging", description: "Optional packaging support based on your project needs." }
   ],
   services: [
-    "DTF Printing",
-    "Embroidery",
-    "Private Label",
-    "Packaging"
+    {
+      id: "dtf",
+      icon: "printer",
+      title: "DTF Printing",
+      description: "High-quality print application for custom designs.",
+      features: [
+        "Great for detailed graphics",
+        "Strong color vibrancy",
+        "Flexible for multiple garment types"
+      ]
+    },
+    {
+      id: "embroidery",
+      icon: "stitch",
+      title: "Embroidery",
+      description: "Premium stitched branding for a high-end finish.",
+      features: [
+        "Professional premium look",
+        "Long-lasting finish",
+        "Ideal for hats, polos, and hoodies"
+      ]
+    },
+    {
+      id: "private-label",
+      icon: "tag",
+      title: "Private Label",
+      description: "Custom labels and clean branding for your apparel line.",
+      features: [
+        "Neck label customization",
+        "Cleaner brand presentation",
+        "Better private-label positioning"
+      ]
+    },
+    {
+      id: "packaging",
+      icon: "box",
+      title: "Packaging",
+      description: "Optional packaging support based on your project needs.",
+      features: [
+        "Organized presentation",
+        "Custom project support",
+        "Useful for brand launches"
+      ]
+    }
   ]
 };
 
@@ -548,8 +591,10 @@ export const siteConfig = {
 
 // CTA configuration
 export const ctaConfig = {
-  heading: "Ready to Start Your Project?",
-  description: "Get a quote today and see how we can help bring your apparel vision to life.",
-  buttonText: "Get Quote",
+  heading: "Ready to start your apparel project?",
+  description: "Tell us what you need and we will guide you through product selection, customization, and quoting.",
+  buttonText: "Request a Quote",
   buttonHref: "#quote",
+  email: "contactorstextiles@gmail.com",
+  tags: ["Premium blanks", "Full customization", "Fast support"]
 };
