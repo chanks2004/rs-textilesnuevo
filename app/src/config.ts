@@ -463,11 +463,79 @@ export type ProductCategory = "tshirt" | "hoodie" | "hat" | "sportswear";
 
 // Navigation configuration
 export const navigationConfig = {
+  logo: "Rs Textiless",
+  contactHref: "#quote",
+  contactLabel: "Request a quote",
   links: [
     { label: "T-Shirts", href: "#tshirts" },
     { label: "Hoodies", href: "#hoodies" },
     { label: "Hats", href: "#hats" },
-    { label: "Sportswear", href: "#sportswear" }
+    { label: "Sportswear", href: "#sportswear" },
+    { label: "Services", href: "#services" }
+  ]
+};
+
+// How It Works configuration
+export const howItWorksConfig = {
+  label: "How it works",
+  heading: "A simple way to source apparel",
+  description: "We help you move faster and safer by simplifying sourcing, customization, and production.",
+  steps: [
+    {
+      title: "Choose your product",
+      description: "Select the apparel style and quality level that best fits your business or brand."
+    },
+    {
+      title: "Customize if needed",
+      description: "Add printing, embroidery, or private label details if your project requires it."
+    },
+    {
+      title: "Request your quote",
+      description: "Send us your requirements and we will guide you through the next steps."
+    }
+  ]
+};
+
+// Customization configuration
+export const customizationConfig = {
+  label: "Customization",
+  heading: "Fully customize your apparel",
+  description: "Printing, embroidery, private labeling, and production support.",
+  options: [
+    { name: "DTF Printing", description: "High-quality print application for custom designs." },
+    { name: "Embroidery", description: "Premium stitched branding for a high-end finish." },
+    { name: "Private Label", description: "Custom labels and clean branding for your apparel line." },
+    { name: "Packaging", description: "Optional packaging support based on your project needs." }
+  ],
+  services: [
+    "DTF Printing",
+    "Embroidery",
+    "Private Label",
+    "Packaging"
+  ]
+};
+
+// Why Us configuration
+export const whyUsConfig = {
+  label: "Why us",
+  heading: "Why brands work with us",
+  description: "We simplify sourcing so you can move faster with more confidence.",
+  features: [
+    {
+      title: "Fewer supplier headaches",
+      description: "Avoid dealing with multiple suppliers and disconnected communication.",
+      iconName: "shield"
+    },
+    {
+      title: "Reliable product guidance",
+      description: "We help you choose the right product for your goals, quality level, and timeline.",
+      iconName: "check"
+    },
+    {
+      title: "Support through the process",
+      description: "From first quote to final production, we help you make safer decisions.",
+      iconName: "users"
+    }
   ]
 };
 
@@ -484,30 +552,4 @@ export const ctaConfig = {
   description: "Get a quote today and see how we can help bring your apparel vision to life.",
   buttonText: "Get Quote",
   buttonHref: "#quote",
-};
-
-// Customization configuration
-export const customizationConfig = {
-  heading: "Customization Options",
-  description: "Choose from a variety of printing and customization methods to make your apparel unique.",
-  options: [
-    { name: "DTF Print", description: "Direct-to-Film printing for vibrant, full-color designs" },
-    { name: "Screen Print", description: "Classic bulk printing with bold, opaque colors" },
-    { name: "Embroidery", description: "Premium stitched designs for a professional look" },
-    { name: "Heat Transfer", description: "Versatile method for small batches and detailed designs" },
-    { name: "Puff Print", description: "Raised, textured prints for a 3D effect" },
-    { name: "Sublimation", description: "Dye-sublimation for permanent, fade-resistant prints" },
-  ],
-};
-
-// Why Us configuration
-export const whyUsConfig = {
-  heading: "Why Choose Us",
-  description: "We're more than a supplier—we're your partner in building a successful apparel brand.",
-  features: [
-    { title: "One Partner, Endless Solutions", description: "Stop juggling multiple suppliers. We handle everything from sourcing to delivery." },
-    { title: "Scale With Confidence", description: "Whether you need 50 pieces or 50,000, our production scales with your business." },
-    { title: "Quality You Can Trust", description: "Every garment undergoes rigorous quality control." },
-    { title: "Fast Turnaround", description: "Our streamlined processes ensure your orders are completed on schedule." },
-  ],
 };
