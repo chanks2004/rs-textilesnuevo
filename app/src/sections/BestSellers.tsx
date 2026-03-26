@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -94,6 +95,7 @@ const bestSellers: BestSellerProduct[] = [
 ];
 
 export default function BestSellers() {
+  const goToQuoteForm = useGoToQuoteForm();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -151,12 +153,7 @@ export default function BestSellers() {
     setShowProductDetail(true);
   };
 
-  const scrollToQuote = () => {
-    const quoteSection = document.querySelector('#quote');
-    if (quoteSection) {
-      quoteSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const scrollToQuote = () => goToQuoteForm();
 
   return (
     <section

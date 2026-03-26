@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Palette, Package, Tag, CheckCircle, ArrowRight, Sparkles, Layers, Zap, Shirt, Box, Gift, FileText, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 const printingTechniques = [
   {
@@ -96,6 +97,7 @@ const labelingOptions = [
 ];
 
 export function ServicesPage() {
+  const goToQuoteForm = useGoToQuoteForm();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -287,13 +289,14 @@ export function ServicesPage() {
             Contact us today to discuss your project and get a custom quote tailored to your needs.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="/#quote"
+            <button
+              type="button"
+              onClick={() => goToQuoteForm()}
               className="bg-[#088571] text-white px-8 py-4 text-base font-medium rounded-full hover:bg-[#066b5a] transition-colors flex items-center gap-2"
             >
               Get a Quote
               <ArrowRight size={18} />
-            </a>
+            </button>
             <Link
               to="/why-us"
               className="bg-white/10 text-white px-8 py-4 text-base font-medium rounded-full hover:bg-white/20 transition-colors"

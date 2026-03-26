@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const goToQuoteForm = useGoToQuoteForm();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +22,7 @@ export function Header() {
     { path: '/tshirts', label: 'T-Shirts' },
     { path: '/hoodies', label: 'Hoodies' },
     { path: '/hats', label: 'Hats' },
+    { path: '/sportswear', label: 'Sportswear' },
     { path: '/why-us', label: 'Why Us' },
   ];
 
@@ -58,12 +61,13 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/#quote"
+            <button
+              type="button"
+              onClick={() => goToQuoteForm()}
               className="bg-[#088571] text-white px-5 py-2.5 text-sm font-medium rounded-full hover:bg-[#066b5a] transition-colors"
             >
               Get Quote
-            </Link>
+            </button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -114,13 +118,16 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/#quote"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="bg-[#088571] text-white text-sm font-medium py-3 px-4 rounded-lg text-center mt-2"
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  goToQuoteForm();
+                }}
+                className="bg-[#088571] text-white text-sm font-medium py-3 px-4 rounded-lg text-center mt-2 w-full"
               >
                 Get Quote
-              </Link>
+              </button>
             </nav>
           </div>
         )}

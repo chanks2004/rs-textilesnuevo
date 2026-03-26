@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { productsConfig, type ProductItem, type ProductCategory } from '../config';
 import { X, ChevronDown } from 'lucide-react';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 // GSM Tier definitions
 const tshirtTiers = [
@@ -65,7 +66,17 @@ const hatBestSellers = [
   { id: 'hat-cotton-structured', badge: 'Premium Pick', badgeColor: 'bg-purple-600' },
 ];
 
-function ProductModal({ product, isOpen, onClose }: { product: ProductItem; isOpen: boolean; onClose: () => void }) {
+function ProductModal({
+  product,
+  isOpen,
+  onClose,
+  onRequestQuote,
+}: {
+  product: ProductItem;
+  isOpen: boolean;
+  onClose: () => void;
+  onRequestQuote: () => void;
+}) {
   const [selectedVariant, setSelectedVariant] = useState(0);
 
   return (
@@ -191,17 +202,16 @@ function ProductModal({ product, isOpen, onClose }: { product: ProductItem; isOp
               </div>
 
               {/* CTA */}
-              <a
-                href="#quote"
-                onClick={(e) => {
-                  e.preventDefault();
+              <button
+                type="button"
+                onClick={() => {
                   onClose();
-                  document.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth' });
+                  onRequestQuote();
                 }}
                 className="block w-full py-3 bg-[#0A0A0A] text-white text-center font-medium rounded-full hover:bg-[#333333] transition-colors"
               >
                 Request a Quote
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -210,7 +220,15 @@ function ProductModal({ product, isOpen, onClose }: { product: ProductItem; isOp
   );
 }
 
-function ProductCard({ product, onClick }: { product: ProductItem; onClick: () => void }) {
+function ProductCard({
+  product,
+  onClick,
+  onGetQuote,
+}: {
+  product: ProductItem;
+  onClick: () => void;
+  onGetQuote: () => void;
+}) {
   return (
     <div className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300">
       {/* Image */}
@@ -247,7 +265,9 @@ function ProductCard({ product, onClick }: { product: ProductItem; onClick: () =
         {/* Color Swatches */}
         {product.variants.length > 0 && (
           <div className="mb-4">
-            <p className="text-xs text-[#9A9A9A] mb-2">30+ colors available</p>
+            <p className="text-xs text-[#9A9A9A] mb-2">
+              {product.category === 'sportswear' ? 'More colors available upon quote' : '30+ colors available'}
+            </p>
             <div className="flex flex-wrap gap-2">
               {product.variants.slice(0, 6).map((variant, idx) => (
                 <span
@@ -275,7 +295,7 @@ function ProductCard({ product, onClick }: { product: ProductItem; onClick: () =
             View Details
           </button>
           <button
-            onClick={() => document.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={onGetQuote}
             className="flex-1 py-2.5 bg-[#088571] text-white text-sm font-medium rounded-lg hover:bg-[#066b5a] transition-colors"
           >
             Get Quote
@@ -286,16 +306,18 @@ function ProductCard({ product, onClick }: { product: ProductItem; onClick: () =
   );
 }
 
-function BestSellerShowcaseCard({ 
-  product, 
-  badge, 
-  badgeColor, 
-  onClick 
-}: { 
-  product: ProductItem; 
-  badge: string; 
+function BestSellerShowcaseCard({
+  product,
+  badge,
+  badgeColor,
+  onClick,
+  onGetQuote,
+}: {
+  product: ProductItem;
+  badge: string;
   badgeColor: string;
-  onClick: () => void; 
+  onClick: () => void;
+  onGetQuote: () => void;
 }) {
   return (
     <div className="group bg-white rounded-xl overflow-hidden border-2 border-[#088571] hover:shadow-lg transition-all duration-300 relative">
@@ -366,7 +388,7 @@ function BestSellerShowcaseCard({
             View Details
           </button>
           <button
-            onClick={() => document.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={onGetQuote}
             className="flex-1 py-2.5 bg-[#088571] text-white text-sm font-medium rounded-lg hover:bg-[#066b5a] transition-colors"
           >
             Get Quote
@@ -377,7 +399,17 @@ function BestSellerShowcaseCard({
   );
 }
 
-function TierSection({ tier, products, onProductClick }: { tier: typeof tshirtTiers[0]; products: ProductItem[]; onProductClick: (p: ProductItem) => void }) {
+function TierSection({
+  tier,
+  products,
+  onProductClick,
+  onGetQuote,
+}: {
+  tier: (typeof tshirtTiers)[0];
+  products: ProductItem[];
+  onProductClick: (p: ProductItem) => void;
+  onGetQuote: () => void;
+}) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   if (products.length === 0) return null;
@@ -412,6 +444,7 @@ function TierSection({ tier, products, onProductClick }: { tier: typeof tshirtTi
               key={product.id}
               product={product}
               onClick={() => onProductClick(product)}
+              onGetQuote={onGetQuote}
             />
           ))}
         </div>
@@ -420,14 +453,16 @@ function TierSection({ tier, products, onProductClick }: { tier: typeof tshirtTi
   );
 }
 
-function BestSellerShowcase({ 
-  products, 
-  onProductClick, 
-  title, 
-  subtitle 
-}: { 
-  products: { product: ProductItem; badge: string; badgeColor: string }[]; 
+function BestSellerShowcase({
+  products,
+  onProductClick,
+  onGetQuote,
+  title,
+  subtitle,
+}: {
+  products: { product: ProductItem; badge: string; badgeColor: string }[];
   onProductClick: (p: ProductItem) => void;
+  onGetQuote: () => void;
   title: string;
   subtitle: string;
 }) {
@@ -451,6 +486,7 @@ function BestSellerShowcase({
               badge={badge}
               badgeColor={badgeColor}
               onClick={() => onProductClick(product)}
+              onGetQuote={onGetQuote}
             />
           ))}
         </div>
@@ -460,6 +496,7 @@ function BestSellerShowcase({
 }
 
 export function Products() {
+  const goToQuoteForm = useGoToQuoteForm();
   const [activeFilter, setActiveFilter] = useState<ProductCategory>('tshirt');
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
   const sectionRefs = useRef<Record<ProductCategory, HTMLDivElement | null>>({
@@ -568,13 +605,15 @@ export function Products() {
               tier={tier}
               products={getProductsByTier('tshirt', tier)}
               onProductClick={setSelectedProduct}
+              onGetQuote={goToQuoteForm}
             />
           ))}
           
           {/* Best Sellers Showcase - At the bottom */}
-          <BestSellerShowcase 
-            products={getBestSellerShowcaseProducts(tshirtBestSellers)} 
+          <BestSellerShowcase
+            products={getBestSellerShowcaseProducts(tshirtBestSellers)}
             onProductClick={setSelectedProduct}
+            onGetQuote={goToQuoteForm}
             title="Best Seller"
             subtitle="Featured T-shirts most popular among brands and businesses"
           />
@@ -598,13 +637,15 @@ export function Products() {
               tier={tier}
               products={getProductsByTier('hoodie', tier)}
               onProductClick={setSelectedProduct}
+              onGetQuote={goToQuoteForm}
             />
           ))}
           
           {/* Best Sellers Showcase - At the bottom */}
-          <BestSellerShowcase 
-            products={getBestSellerShowcaseProducts(hoodieBestSellers)} 
+          <BestSellerShowcase
+            products={getBestSellerShowcaseProducts(hoodieBestSellers)}
             onProductClick={setSelectedProduct}
+            onGetQuote={goToQuoteForm}
             title="Best Seller"
             subtitle="Featured hoodies most popular among brands and businesses"
           />
@@ -628,30 +669,38 @@ export function Products() {
                 key={product.id}
                 product={product}
                 onClick={() => setSelectedProduct(product)}
+                onGetQuote={goToQuoteForm}
               />
             ))}
           </div>
           
           {/* Best Sellers Showcase - At the bottom */}
-          <BestSellerShowcase 
-            products={getBestSellerShowcaseProducts(hatBestSellers)} 
+          <BestSellerShowcase
+            products={getBestSellerShowcaseProducts(hatBestSellers)}
             onProductClick={setSelectedProduct}
+            onGetQuote={goToQuoteForm}
             title="Best Seller"
             subtitle="Featured hats most popular among brands and businesses"
           />
         </div>
 
-        {/* SPORTSWEAR Section - Keep as is */}
-        <div 
-          id="sportswear" 
-          ref={(el) => { sectionRefs.current.sportswear = el; }}
+        {/* SPORTSWEAR Section */}
+        <div
+          id="sportswear"
+          ref={(el) => {
+            sectionRefs.current.sportswear = el;
+          }}
           className="mb-20 scroll-mt-32"
         >
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-4">
             <img src={categoryIcons.sportswear} alt="Sportswear" className="w-10 h-10 object-contain" />
             <h2 className="text-3xl font-bold text-[#0A0A0A]">Sportswear</h2>
           </div>
-          
+          <p className="text-[#6A6A6A] max-w-3xl mb-8">
+            High-performance apparel designed for movement, comfort, and breathability. Ideal for gyms, teams, and active
+            brands.
+          </p>
+
           {/* All Sportswear */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {getProductsByCategory('sportswear').map((product) => (
@@ -659,6 +708,7 @@ export function Products() {
                 key={product.id}
                 product={product}
                 onClick={() => setSelectedProduct(product)}
+                onGetQuote={goToQuoteForm}
               />
             ))}
           </div>
@@ -671,6 +721,7 @@ export function Products() {
           product={selectedProduct}
           isOpen={!!selectedProduct}
           onClose={() => setSelectedProduct(null)}
+          onRequestQuote={goToQuoteForm}
         />
       )}
     </section>

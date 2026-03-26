@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, Palette, Package, Truck, Shield, Clock, Headphones, ArrowRight } from 'lucide-react';
 import { productsConfig } from '../config';
 import { QuoteForm } from '../sections/QuoteForm';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 export function HomePage() {
+  const goToQuoteForm = useGoToQuoteForm();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -22,6 +24,7 @@ export function HomePage() {
   const featuredTshirt = productsConfig.products.find(p => p.id === 'tshirt-260-ultra');
   const featuredHoodie = productsConfig.products.find(p => p.id === 'hoodie-320-heavyweight');
   const featuredHat = productsConfig.products.find(p => p.id === 'hat-cotton-dad');
+  const featuredSportswear = productsConfig.products.find((p) => p.id === 'sportswear-short-sleeve-tee');
 
   const features = [
     { icon: Palette, title: 'Custom Branding', description: 'DTF printing, embroidery, screen printing, and more customization options for your brand.' },
@@ -180,6 +183,37 @@ export function HomePage() {
               </div>
             </Link>
           </div>
+
+          {/* Sportswear — debajo de gorras (misma fila en desktop: columna 3) */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="hidden md:block" aria-hidden />
+            <div className="hidden md:block" aria-hidden />
+            <Link to="/sportswear" className="group">
+              <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#088571]/30 hover:shadow-lg transition-all duration-300">
+                <div className="aspect-square bg-gray-50 p-8">
+                  {featuredSportswear && (
+                    <img
+                      src={featuredSportswear.image}
+                      alt="Sportswear"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <img src="/images/icons/sportswear-icon.png" alt="Sportswear" className="w-8 h-8 object-contain" />
+                    <h3 className="text-xl font-bold text-[#0A0A0A]">Sportswear</h3>
+                  </div>
+                  <p className="text-[#6A6A6A] mb-4">
+                    Performance tees for training, teams, and active brands — moisture-wicking and breathable.
+                  </p>
+                  <span className="text-[#088571] font-medium flex items-center gap-2">
+                    View Collection <ArrowRight size={16} />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -293,12 +327,13 @@ export function HomePage() {
             >
               Learn Why Us
             </Link>
-            <a
-              href="#quote"
+            <button
+              type="button"
+              onClick={() => goToQuoteForm()}
               className="bg-[#088571] text-white px-8 py-4 text-base font-medium rounded-full hover:bg-[#066b5a] transition-colors"
             >
               Get a Quote
-            </a>
+            </button>
           </div>
         </div>
       </section>

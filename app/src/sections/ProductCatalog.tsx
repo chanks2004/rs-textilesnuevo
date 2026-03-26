@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -47,6 +48,7 @@ const categoryIcons: Record<ProductCategory, string> = {
 };
 
 export default function ProductCatalog() {
+  const goToQuoteForm = useGoToQuoteForm();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const categorySectionRef = useRef<HTMLDivElement>(null);
@@ -226,12 +228,7 @@ export default function ProductCatalog() {
     toast.success(`${selectedProduct.name} added to quote request`);
   };
 
-  const scrollToQuote = () => {
-    const quoteSection = document.querySelector('#quote');
-    if (quoteSection) {
-      quoteSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const scrollToQuote = () => goToQuoteForm();
 
   return (
     <section
@@ -304,6 +301,7 @@ export default function ProductCatalog() {
                     key={product.id}
                     product={product}
                     onViewDetails={openProductDetail}
+                    onGetQuote={goToQuoteForm}
                   />
                 ))}
               </div>
@@ -325,6 +323,7 @@ export default function ProductCatalog() {
                     key={product.id}
                     product={product}
                     onViewDetails={openProductDetail}
+                    onGetQuote={goToQuoteForm}
                   />
                 ))}
               </div>
@@ -339,21 +338,33 @@ export default function ProductCatalog() {
                   key={product.id}
                   product={product}
                   onViewDetails={openProductDetail}
+                  onGetQuote={goToQuoteForm}
                 />
               ))}
             </div>
           )}
 
-          {/* Sportswear - No grouping */}
+          {/* Sportswear — same tier-style block as T-Shirts (title + description + grid) */}
           {activeFilter === 'sportswear' && (
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onViewDetails={openProductDetail}
-                />
-              ))}
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <h3 className="text-[#0A0A0A] font-semibold text-xl whitespace-nowrap">Sportswear</h3>
+                <div className="flex-1 h-px bg-[#E5E5E5]" />
+              </div>
+              <p className="text-[#6A6A6A] text-sm max-w-3xl -mt-2">
+                High-performance apparel designed for movement, comfort, and breathability. Ideal for gyms, teams, and
+                active brands.
+              </p>
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onViewDetails={openProductDetail}
+                    onGetQuote={goToQuoteForm}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -426,7 +437,13 @@ export default function ProductCatalog() {
               <div className="p-8">
                 <DialogHeader className="mb-6">
                   <span className="text-[#088571] text-xs font-mono uppercase tracking-wider mb-2">
-                    {selectedProduct.category === 'tshirt' ? 'T-Shirt' : selectedProduct.category === 'hoodie' ? 'Hoodie' : 'Hat'}
+                    {selectedProduct.category === 'tshirt'
+                      ? 'T-Shirt'
+                      : selectedProduct.category === 'hoodie'
+                        ? 'Hoodie'
+                        : selectedProduct.category === 'sportswear'
+                          ? 'Sportswear'
+                          : 'Hat'}
                   </span>
                   <DialogTitle className="text-2xl font-bold text-[#0A0A0A]">
                     {selectedProduct.name}
@@ -526,7 +543,9 @@ export default function ProductCatalog() {
                 <div>
                   <h4 className="font-semibold text-lg">{selectedProduct.name}</h4>
                   <p className="text-[#6A6A6A] text-sm">{selectedProduct.variants[selectedVariant]?.color}</p>
-                  <p className="text-[#088571] text-sm">{selectedProduct.gsm} GSM • {selectedProduct.fit}</p>
+                  <p className="text-[#088571] text-sm">
+                    {selectedProduct.gsm != null ? `${selectedProduct.gsm} GSM • ${selectedProduct.fit}` : selectedProduct.fit}
+                  </p>
                 </div>
               </div>
 
@@ -669,33 +688,37 @@ export default function ProductCatalog() {
 
 // Product Card Component
 interface ProductCardProps {
-  product: typeof productsConfig.products[0];
-  onViewDetails: (product: typeof productsConfig.products[0]) => void;
+  product: (typeof productsConfig.products)[0];
+  onViewDetails: (product: (typeof productsConfig.products)[0]) => void;
+  onGetQuote: () => void;
 }
 
-function ProductCard({ product, onViewDetails }: ProductCardProps) {
+function ProductCard({ product, onViewDetails, onGetQuote }: ProductCardProps) {
   const [activeVariant, setActiveVariant] = useState(0);
 
   return (
-    <div 
-      className="group bg-white border border-[#E5E5E5] rounded-lg overflow-hidden hover:border-[#088571]/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
-      onClick={() => onViewDetails(product)}
-    >
+    <div className="group bg-white border border-[#E5E5E5] rounded-lg overflow-hidden hover:border-[#088571]/30 hover:shadow-lg transition-all duration-300">
       {/* Image */}
-      <div className="aspect-square overflow-hidden bg-[#F5F5F5] relative">
+      <div
+        className="aspect-square overflow-hidden bg-[#F5F5F5] relative cursor-pointer"
+        onClick={() => onViewDetails(product)}
+        role="presentation"
+      >
         <img
           src={product.variants[activeVariant]?.image || product.image}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        {/* GSM Badge - Top LEFT for T-shirts and Hoodies */}
+        {/* GSM Badge — T-Shirts, Hoodies, Sportswear */}
         {(product.category === 'tshirt' || product.category === 'hoodie') && product.gsm && (
-          <div className="absolute top-2 left-2 bg-white/80 backdrop-blur-sm px-1.5 py-0.5 rounded">
-            <span className="text-[#0A0A0A] text-[10px] font-mono">{product.gsm} GSM</span>
-          </div>
-        )}
-        {/* Colors Badge - Bottom RIGHT for T-shirts and Hoodies, Top RIGHT for Hats and Sportswear */}
-        <div className={`absolute ${(product.category === 'tshirt' || product.category === 'hoodie') ? 'bottom-0 right-0' : 'top-0 right-0'} bg-[#088571] px-1.5 py-1 rounded-bl-sm`}>
+            <div className="absolute top-2 left-2 bg-white/80 backdrop-blur-sm px-1.5 py-0.5 rounded">
+              <span className="text-[#0A0A0A] text-[10px] font-mono">{product.gsm} GSM</span>
+            </div>
+          )}
+        {/* Colors count badge */}
+        <div
+          className={`absolute ${product.category === 'tshirt' || product.category === 'hoodie' ? 'bottom-0 right-0' : 'top-0 right-0'} bg-[#088571] px-1.5 py-1 rounded-bl-sm`}
+        >
           <span className="text-white text-[9px] font-medium">
             {product.category === 'sportswear' ? '15+ colors' : `+${product.colorCount} colors`}
           </span>
@@ -704,43 +727,66 @@ function ProductCard({ product, onViewDetails }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-5">
-        {/* Name */}
-        <h3 className="text-[#0A0A0A] font-semibold text-lg mb-1 group-hover:text-[#088571] transition-colors">
-          {product.name}
-        </h3>
-
-        {/* Specs */}
-        <p className="text-[#6A6A6A] text-sm mb-3">
-          {product.fit} • {product.fabric}
-        </p>
-
-        {/* Color Swatches */}
-        <div className="flex gap-1.5 mb-4">
-          {product.variants.slice(0, 4).map((variant, idx) => (
-            <button
-              key={variant.color}
-              onClick={(e) => { e.stopPropagation(); setActiveVariant(idx); }}
-              className={`w-5 h-5 rounded-full border-2 transition-all ${
-                activeVariant === idx
-                  ? 'border-[#088571] scale-110'
-                  : 'border-transparent'
-              }`}
-              style={{ backgroundColor: variant.colorCode }}
-              title={variant.color}
-            />
-          ))}
-          {product.variants.length > 4 && (
-            <span className="w-5 h-5 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#6A6A6A] text-xs">
-              +{product.variants.length - 4}
-            </span>
-          )}
+        <div className="cursor-pointer" onClick={() => onViewDetails(product)} role="presentation">
+          <h3 className="text-[#0A0A0A] font-semibold text-lg mb-1 group-hover:text-[#088571] transition-colors">
+            {product.name}
+          </h3>
+          <p className="text-[#6A6A6A] text-sm mb-3">
+            {product.fit} • {product.fabric}
+          </p>
         </div>
 
-        {/* CTA */}
-        <button className="w-full bg-transparent border border-[#E5E5E5] text-[#0A0A0A] py-2.5 text-sm font-medium hover:bg-[#088571] hover:border-[#088571] hover:text-white transition-all rounded-md flex items-center justify-center gap-2 group/btn">
-          View Details
-          <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-        </button>
+        {/* Color Swatches */}
+        <div className="mb-4">
+          {product.category === 'sportswear' && (
+            <p className="text-xs text-[#9A9A9A] mb-2">More colors available upon quote</p>
+          )}
+          <div className="flex gap-1.5">
+            {product.variants.slice(0, 4).map((variant, idx) => (
+              <button
+                key={variant.color}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveVariant(idx);
+                }}
+                className={`w-5 h-5 rounded-full border-2 transition-all ${
+                  activeVariant === idx ? 'border-[#088571] scale-110' : 'border-transparent'
+                }`}
+                style={{ backgroundColor: variant.colorCode }}
+                title={variant.color}
+              />
+            ))}
+            {product.variants.length > 4 && (
+              <span className="w-5 h-5 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#6A6A6A] text-xs">
+                +{product.variants.length - 4}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails(product);
+            }}
+            className="flex-1 py-2.5 bg-white text-[#0A0A0A] text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            View Details
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onGetQuote();
+            }}
+            className="flex-1 py-2.5 bg-[#088571] text-white text-sm font-medium rounded-lg hover:bg-[#066b5a] transition-colors"
+          >
+            Get Quote
+          </button>
+        </div>
       </div>
     </div>
   );

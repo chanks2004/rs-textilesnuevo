@@ -69,7 +69,17 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+#quote-form.quote-form--highlight {
+  outline: 2px solid rgba(8, 133, 113, 0.45);
+  outline-offset: 10px;
+  border-radius: 1rem;
+  transition: outline-color 0.35s ease, outline-offset 0.35s ease;
 }

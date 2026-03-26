@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 import { ArrowRight, Users, TrendingUp, Award, Globe, Clock, Shield, HeartHandshake, Zap, CheckCircle2 } from 'lucide-react';
 
 const valuePropositions = [
@@ -79,6 +80,7 @@ const howWeHelp = [
 ];
 
 export function WhyUsPage() {
+  const goToQuoteForm = useGoToQuoteForm();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -100,13 +102,14 @@ export function WhyUsPage() {
                 We're more than a supplier—we're your partner in building a successful apparel brand. From concept to delivery, we provide the expertise, quality, and reliability you need to stand out in a competitive market.
               </p>
               <div className="flex flex-wrap gap-4">
-                <a
-                  href="/#quote"
+                <button
+                  type="button"
+                  onClick={() => goToQuoteForm()}
                   className="bg-[#088571] text-white px-8 py-4 text-base font-medium rounded-full hover:bg-[#066b5a] transition-colors flex items-center gap-2"
                 >
                   Get Started
                   <ArrowRight size={18} />
-                </a>
+                </button>
                 <Link
                   to="/services"
                   className="bg-white text-[#0A0A0A] px-8 py-4 text-base font-medium border border-gray-200 hover:border-gray-300 transition-colors rounded-full"
@@ -261,12 +264,13 @@ export function WhyUsPage() {
                 Let's discuss how we can help take your apparel brand to the next level. Get a custom quote within 24 hours.
               </p>
               <div className="space-y-4">
-                <a
-                  href="/#quote"
+                <button
+                  type="button"
+                  onClick={() => goToQuoteForm()}
                   className="block w-full bg-[#088571] text-white px-6 py-4 text-center font-medium rounded-full hover:bg-[#066b5a] transition-colors"
                 >
                   Request a Quote
-                </a>
+                </button>
                 <Link
                   to="/services"
                   className="block w-full bg-white text-[#0A0A0A] px-6 py-4 text-center font-medium border border-gray-200 hover:border-gray-300 transition-colors rounded-full"

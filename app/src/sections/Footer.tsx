@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Mail, Instagram, Facebook, Linkedin } from 'lucide-react';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 export function Footer() {
+  const goToQuoteForm = useGoToQuoteForm();
   return (
     <footer className="bg-[#0A0A0A] text-white py-16 lg:py-20">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,6 +26,7 @@ export function Footer() {
               <li><Link to="/tshirts" className="text-gray-400 hover:text-white transition-colors">T-Shirts</Link></li>
               <li><Link to="/hoodies" className="text-gray-400 hover:text-white transition-colors">Hoodies</Link></li>
               <li><Link to="/hats" className="text-gray-400 hover:text-white transition-colors">Hats</Link></li>
+              <li><Link to="/sportswear" className="text-gray-400 hover:text-white transition-colors">Sportswear</Link></li>
             </ul>
           </div>
 
@@ -33,7 +36,15 @@ export function Footer() {
             <ul className="space-y-3">
               <li><Link to="/services" className="text-gray-400 hover:text-white transition-colors">Our Services</Link></li>
               <li><Link to="/why-us" className="text-gray-400 hover:text-white transition-colors">Why Us</Link></li>
-              <li><a href="/#quote" className="text-gray-400 hover:text-white transition-colors">Get a Quote</a></li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => goToQuoteForm()}
+                  className="text-gray-400 hover:text-white transition-colors text-left"
+                >
+                  Get a Quote
+                </button>
+              </li>
             </ul>
           </div>
 

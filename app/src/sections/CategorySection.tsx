@@ -11,6 +11,11 @@ import {
 } from '@/components/ui/dialog';
 import emailjs from '@emailjs/browser';
 import { toast } from 'sonner';
+import {
+  EMAILJS_PUBLIC_KEY,
+  EMAILJS_SERVICE_ID,
+  EMAILJS_TEMPLATE_ID,
+} from '../lib/emailjsConfig';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,12 +50,6 @@ const categoryIcons: Record<ProductCategory, string> = {
   hat: '/images/icons/hat.png',
   sportswear: '/images/icons/sportswear.png',
 };
-
-// EmailJS Configuration
-const EMAILJS_SERVICE_ID = 'service_z4iwvig';
-const EMAILJS_TEMPLATE_ID = 'template_2w7o5c9';
-const EMAILJS_PUBLIC_KEY = 'H46LWh9PfR_QALVFM';
-const RECIPIENT_EMAIL = 'contactorstextiles@gmail.com';
 
 export default function CategorySection({ category, title, description, tierGroups, bestSellers }: CategorySectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -200,26 +199,27 @@ export default function CategorySection({ category, title, description, tierGrou
 
     try {
       const formData = new FormData(e.currentTarget);
-      
+      const baseMessage = String(formData.get('additional_details') ?? '').trim();
+      const fileNames = files.map((f) => f.name).join(', ');
+      const fileNote =
+        fileNames.length > 0
+          ? `Reference file names (not attached via email): ${fileNames}`
+          : '';
+      const contextNote = `[Product: ${quoteProduct.name} | Category: ${category} | Color variant: ${quoteProduct.variants[quoteVariant]?.color ?? '—'} | GSM: ${quoteProduct.gsm ?? 'N/A'} | Fabric: ${quoteProduct.fabric} | Fit: ${quoteProduct.fit}]`;
+      const additional_details = [baseMessage, fileNote, contextNote].filter(Boolean).join('\n\n');
+
       const templateParams = {
-        to_email: RECIPIENT_EMAIL,
-        from_name: formData.get('quoteName') as string,
-        from_email: formData.get('quoteEmail') as string,
-        company: formData.get('quoteCompany') as string || 'Not provided',
-        phone: formData.get('quotePhone') as string || 'Not provided',
-        product_name: quoteProduct.name,
-        product_category: category,
-        product_color: quoteProduct.variants[quoteVariant]?.color || 'Not specified',
-        gsm: quoteProduct.gsm ? `${quoteProduct.gsm} GSM` : 'N/A',
-        fabric: quoteProduct.fabric,
-        fit: quoteProduct.fit,
-        quantity: formData.get('quoteQuantity') as string,
-        sizes: formData.get('quoteSizes') as string || 'Not specified',
-        customization: formData.get('quoteCustomization') as string || 'None',
-        deadline: formData.get('quoteDeadline') as string || 'Not specified',
-        message: formData.get('quoteMessage') as string || 'No additional details',
-        file_count: files.length.toString(),
-        file_names: files.map(f => f.name).join(', ') || 'No files attached',
+        user_name: String(formData.get('user_name') ?? '').trim(),
+        user_email: String(formData.get('user_email') ?? '').trim(),
+        company_name: String(formData.get('company_name') ?? '').trim() || '—',
+        user_phone: String(formData.get('user_phone') ?? '').trim() || '—',
+        product_type: quoteProduct.name,
+        estimated_quantity: String(formData.get('estimated_quantity') ?? '').trim(),
+        preferred_colors: String(formData.get('preferred_colors') ?? '').trim() || '—',
+        size_breakdown: String(formData.get('size_breakdown') ?? '').trim() || '—',
+        delivery_date: String(formData.get('delivery_date') ?? '').trim() || '—',
+        customization_type: String(formData.get('customization_type') ?? '').trim() || '—',
+        additional_details: additional_details || '—',
       };
 
       await emailjs.send(
@@ -229,13 +229,13 @@ export default function CategorySection({ category, title, description, tierGrou
         EMAILJS_PUBLIC_KEY
       );
 
-      toast.success('Quote request sent successfully! We will get back to you within 24 hours.');
+      toast.success('Your request has been sent successfully. We will contact you shortly.');
       setShowQuoteModal(false);
       setFiles([]);
       setFilePreviews([]);
     } catch (error) {
       console.error('Error sending email:', error);
-      toast.error('Failed to send quote request. Please try again or email us directly.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -629,7 +629,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     </label>
                     <input
                       type="text"
-                      name="quoteName"
+                      name="user_name"
                       required
                       className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors"
                       placeholder="John Doe"
@@ -641,7 +641,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     </label>
                     <input
                       type="email"
-                      name="quoteEmail"
+                      name="user_email"
                       required
                       className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors"
                       placeholder="john@company.com"
@@ -656,7 +656,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     </label>
                     <input
                       type="text"
-                      name="quoteCompany"
+                      name="company_name"
                       className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors"
                       placeholder="Your Brand"
                     />
@@ -667,7 +667,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     </label>
                     <input
                       type="tel"
-                      name="quotePhone"
+                      name="user_phone"
                       className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors"
                       placeholder="+1 (555) 000-0000"
                     />
@@ -681,7 +681,7 @@ export default function CategorySection({ category, title, description, tierGrou
                       Quantity <span className="text-[#088571]">*</span>
                     </label>
                     <select
-                      name="quoteQuantity"
+                      name="estimated_quantity"
                       required
                       className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] focus:outline-none focus:border-[#088571] transition-colors appearance-none"
                     >
@@ -699,10 +699,24 @@ export default function CategorySection({ category, title, description, tierGrou
                     </label>
                     <input
                       type="date"
-                      name="quoteDeadline"
+                      name="delivery_date"
                       className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] focus:outline-none focus:border-[#088571] transition-colors"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-[#0A0A0A] text-sm font-medium mb-1.5">
+                    Preferred Color(s)
+                  </label>
+                  <input
+                    type="text"
+                    name="preferred_colors"
+                    key={`${quoteProduct.id}-${quoteVariant}`}
+                    defaultValue={quoteProduct.variants[quoteVariant]?.color ?? ''}
+                    className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors"
+                    placeholder="e.g., Black, Navy, or specific Pantone"
+                  />
                 </div>
 
                 <div>
@@ -711,7 +725,7 @@ export default function CategorySection({ category, title, description, tierGrou
                   </label>
                   <input
                     type="text"
-                    name="quoteSizes"
+                    name="size_breakdown"
                     className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors"
                     placeholder="e.g., S:10, M:20, L:20, XL:10"
                   />
@@ -722,7 +736,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     Customization Needed
                   </label>
                   <select
-                    name="quoteCustomization"
+                    name="customization_type"
                     className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] focus:outline-none focus:border-[#088571] transition-colors appearance-none"
                   >
                     <option value="">Select customization</option>
@@ -731,7 +745,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     <option value="Screen Printing">Screen Printing</option>
                     <option value="Private Label">Private Label</option>
                     <option value="Multiple Services">Multiple Services</option>
-                    <option value="Just Blanks">Just Blanks (No Customization)</option>
+                    <option value="Just Blanks (No Customization)">Just Blanks (No Customization)</option>
                   </select>
                 </div>
 
@@ -766,7 +780,8 @@ export default function CategorySection({ category, title, description, tierGrou
                   
                   {/* Helper Text */}
                   <p className="text-[#9A9A9A] text-xs mt-2">
-                    You don't need a design to request a quote. If you have one, feel free to upload it.
+                    You don't need a design to request a quote. If you already have one, feel free to upload it
+                    here.
                   </p>
 
                   {/* File Previews */}
@@ -812,7 +827,7 @@ export default function CategorySection({ category, title, description, tierGrou
                     Additional Details
                   </label>
                   <textarea
-                    name="quoteMessage"
+                    name="additional_details"
                     rows={3}
                     className="w-full px-4 py-2.5 bg-white border border-[#E5E5E5] rounded-md text-[#0A0A0A] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#088571] transition-colors resize-none"
                     placeholder="Tell us more about your project, design requirements, or any questions you have..."
@@ -828,7 +843,7 @@ export default function CategorySection({ category, title, description, tierGrou
                   {isSubmitting ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      Sending Request...
+                      Sending...
                     </>
                   ) : (
                     <>

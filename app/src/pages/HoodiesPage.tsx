@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 import { productsConfig, type ProductItem } from '../config';
 import { ArrowRight, ChevronDown, Star } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -32,7 +33,17 @@ const bestSellers = [
   { id: 'hoodie-400-premium', badge: 'Premium Pick', badgeColor: 'bg-purple-600' },
 ];
 
-function ProductModal({ product, isOpen, onClose }: { product: ProductItem; isOpen: boolean; onClose: () => void }) {
+function ProductModal({
+  product,
+  isOpen,
+  onClose,
+  onRequestQuote,
+}: {
+  product: ProductItem;
+  isOpen: boolean;
+  onClose: () => void;
+  onRequestQuote: () => void;
+}) {
   const [selectedVariant, setSelectedVariant] = useState(0);
 
   return (
@@ -90,9 +101,16 @@ function ProductModal({ product, isOpen, onClose }: { product: ProductItem; isOp
                   ))}
                 </div>
               </div>
-              <a href="/#quote" onClick={(e) => { e.preventDefault(); onClose(); document.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth' }); }} className="block w-full py-3 bg-[#0A0A0A] text-white text-center font-medium rounded-full hover:bg-[#333333] transition-colors">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onRequestQuote();
+                }}
+                className="block w-full py-3 bg-[#0A0A0A] text-white text-center font-medium rounded-full hover:bg-[#333333] transition-colors"
+              >
                 Request a Quote
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -101,7 +119,21 @@ function ProductModal({ product, isOpen, onClose }: { product: ProductItem; isOp
   );
 }
 
-function ProductCard({ product, onClick, isBestSeller = false, badge, badgeColor }: { product: ProductItem; onClick: () => void; isBestSeller?: boolean; badge?: string; badgeColor?: string }) {
+function ProductCard({
+  product,
+  onClick,
+  onGetQuote,
+  isBestSeller = false,
+  badge,
+  badgeColor,
+}: {
+  product: ProductItem;
+  onClick: () => void;
+  onGetQuote: () => void;
+  isBestSeller?: boolean;
+  badge?: string;
+  badgeColor?: string;
+}) {
   return (
     <div className={`group bg-white rounded-xl overflow-hidden border ${isBestSeller ? 'border-2 border-[#088571]' : 'border-gray-100'} hover:border-gray-200 hover:shadow-lg transition-all duration-300 relative`}>
       {isBestSeller && badge && (
@@ -135,14 +167,24 @@ function ProductCard({ product, onClick, isBestSeller = false, badge, badgeColor
         )}
         <div className="flex gap-3">
           <button onClick={onClick} className="flex-1 py-2.5 bg-white text-[#0A0A0A] text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors">View Details</button>
-          <button onClick={() => document.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth' })} className="flex-1 py-2.5 bg-[#088571] text-white text-sm font-medium rounded-lg hover:bg-[#066b5a] transition-colors">Get Quote</button>
+          <button onClick={onGetQuote} className="flex-1 py-2.5 bg-[#088571] text-white text-sm font-medium rounded-lg hover:bg-[#066b5a] transition-colors">Get Quote</button>
         </div>
       </div>
     </div>
   );
 }
 
-function TierSection({ tier, products, onProductClick }: { tier: typeof hoodieTiers[0]; products: ProductItem[]; onProductClick: (p: ProductItem) => void }) {
+function TierSection({
+  tier,
+  products,
+  onProductClick,
+  onGetQuote,
+}: {
+  tier: (typeof hoodieTiers)[0];
+  products: ProductItem[];
+  onProductClick: (p: ProductItem) => void;
+  onGetQuote: () => void;
+}) {
   const [isExpanded, setIsExpanded] = useState(true);
   if (products.length === 0) return null;
 
@@ -161,7 +203,12 @@ function TierSection({ tier, products, onProductClick }: { tier: typeof hoodieTi
       {isExpanded && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} onClick={() => onProductClick(product)} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              onClick={() => onProductClick(product)}
+              onGetQuote={onGetQuote}
+            />
           ))}
         </div>
       )}
@@ -170,6 +217,7 @@ function TierSection({ tier, products, onProductClick }: { tier: typeof hoodieTi
 }
 
 export function HoodiesPage() {
+  const goToQuoteForm = useGoToQuoteForm();
   useEffect(() => { window.scrollTo(0, 0); }, []);
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
@@ -203,9 +251,13 @@ export function HoodiesPage() {
                 From 280GSM lightweight to 400GSM ultra-heavyweight. Stay warm in style with our premium hoodie collection, available in 50+ colors.
               </p>
               <div className="flex flex-wrap gap-4">
-                <a href="/#quote" className="bg-[#088571] text-white px-8 py-4 text-base font-medium rounded-full hover:bg-[#066b5a] transition-colors flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => goToQuoteForm()}
+                  className="bg-[#088571] text-white px-8 py-4 text-base font-medium rounded-full hover:bg-[#066b5a] transition-colors flex items-center gap-2"
+                >
                   Request a Quote <ArrowRight size={18} />
-                </a>
+                </button>
                 <Link to="/services" className="bg-white text-[#0A0A0A] px-8 py-4 text-base font-medium border border-gray-200 hover:border-gray-300 transition-colors rounded-full">
                   View Printing Options
                 </Link>
@@ -222,7 +274,7 @@ export function HoodiesPage() {
       <section className="py-16 lg:py-24 bg-gray-50">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           {hoodieTiers.map((tier) => (
-            <TierSection key={tier.name} tier={tier} products={getProductsByTier(tier)} onProductClick={setSelectedProduct} />
+            <TierSection key={tier.name} tier={tier} products={getProductsByTier(tier)} onProductClick={setSelectedProduct} onGetQuote={goToQuoteForm} />
           ))}
 
           {/* Best Sellers */}
@@ -237,7 +289,15 @@ export function HoodiesPage() {
             <div className="flex justify-center">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl">
                 {getBestSellerProducts().map(({ product, badge, badgeColor }) => (
-                  <ProductCard key={product.id} product={product} onClick={() => setSelectedProduct(product)} isBestSeller badge={badge} badgeColor={badgeColor} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onClick={() => setSelectedProduct(product)}
+                    onGetQuote={goToQuoteForm}
+                    isBestSeller
+                    badge={badge}
+                    badgeColor={badgeColor}
+                  />
                 ))}
               </div>
             </div>
@@ -250,13 +310,24 @@ export function HoodiesPage() {
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">Ready to Order?</h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-8">Get a custom quote for your hoodie order. We offer competitive pricing and fast turnaround times.</p>
-          <a href="/#quote" className="inline-flex items-center gap-2 bg-[#088571] text-white px-8 py-4 rounded-full font-medium hover:bg-[#066b5a] transition-colors">
+          <button
+            type="button"
+            onClick={() => goToQuoteForm()}
+            className="inline-flex items-center gap-2 bg-[#088571] text-white px-8 py-4 rounded-full font-medium hover:bg-[#066b5a] transition-colors"
+          >
             Get Your Quote <ArrowRight size={18} />
-          </a>
+          </button>
         </div>
       </section>
 
-      {selectedProduct && <ProductModal product={selectedProduct} isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)} />}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onRequestQuote={goToQuoteForm}
+        />
+      )}
     </div>
   );
 }

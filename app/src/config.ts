@@ -421,39 +421,39 @@ export const productsConfig: ProductsConfig = {
     },
     // SPORTSWEAR
     {
-      id: "sportswear-performance-tee",
-      name: "Performance Tee",
+      id: "sportswear-short-sleeve-tee",
+      name: "Short Sleeve Sports Tee",
       category: "sportswear",
-      image: "/images/sportswear/performance-tee-black.jpg",
+      image: "/images/sportswear/unisex-sports-black.jpg",
       variants: [
-        { ...tshirtColors.black, image: "/images/sportswear/performance-tee-black.jpg" },
-        { ...tshirtColors.white, image: "/images/tshirts/320-master-white.jpg" },
-        { ...tshirtColors.navy, image: "/images/tshirts/290-elite-navy.jpg" },
-        { ...tshirtColors.grey, image: "/images/tshirts/330-apex-charcoal.jpg" },
+        { color: "Black", colorCode: "#0A0A0A", image: "/images/sportswear/unisex-sports-black.jpg" },
+        { color: "Green", colorCode: "#15803d", image: "/images/sportswear/unisex-sports-green.jpg" },
+        { color: "White", colorCode: "#F5F5F5", image: "/images/sportswear/unisex-sports-white.jpg" },
       ],
       fabric: "100% Polyester",
       fit: "Athletic Fit",
       features: ["Moisture-wicking", "Quick-dry", "Breathable"],
-      description: "High-performance athletic tee designed for active use. Moisture-wicking fabric keeps you cool and dry.",
-      colorCount: 50,
+      description:
+        "Lightweight and breathable, perfect for training, fitness brands, and active environments.",
+      colorCount: 15,
       customizationOptions: ["DTF Print", "Sublimation", "Heat Transfer"],
     },
     {
-      id: "sportswear-performance-longsleeve",
-      name: "Performance Long Sleeve",
+      id: "sportswear-long-sleeve-tee",
+      name: "Long Sleeve Sports Tee",
       category: "sportswear",
-      image: "/images/sportswear/performance-longsleeve-black.jpg",
+      image: "/images/sportswear/longsleeve-sports-black.jpg",
       variants: [
-        { ...tshirtColors.black, image: "/images/sportswear/performance-longsleeve-black.jpg" },
-        { ...tshirtColors.white, image: "/images/tshirts/320-master-white.jpg" },
-        { ...tshirtColors.navy, image: "/images/tshirts/290-elite-navy.jpg" },
-        { ...tshirtColors.grey, image: "/images/tshirts/330-apex-charcoal.jpg" },
+        { color: "Black", colorCode: "#0A0A0A", image: "/images/sportswear/longsleeve-sports-black.jpg" },
+        { color: "Green", colorCode: "#15803d", image: "/images/sportswear/longsleeve-sports-green.jpg" },
+        { color: "White", colorCode: "#F5F5F5", image: "/images/sportswear/longsleeve-sports-white.jpg" },
       ],
       fabric: "100% Polyester",
       fit: "Athletic Fit",
       features: ["Moisture-wicking", "Quick-dry", "UV protection"],
-      description: "Long sleeve performance shirt for outdoor activities. Provides coverage and comfort with moisture-wicking technology.",
-      colorCount: 50,
+      description:
+        "Designed for performance with added coverage, ideal for outdoor training and premium athletic collections.",
+      colorCount: 15,
       customizationOptions: ["DTF Print", "Sublimation", "Heat Transfer"],
     },
   ],
@@ -464,7 +464,7 @@ export type ProductCategory = "tshirt" | "hoodie" | "hat" | "sportswear";
 // Navigation configuration
 export const navigationConfig = {
   logo: "Rs Textiless",
-  contactHref: "#quote",
+  contactHref: "#quote-form",
   contactLabel: "Request a quote",
   links: [
     { label: "T-Shirts", href: "#tshirts" },
@@ -594,7 +594,7 @@ export const ctaConfig = {
   heading: "Ready to start your apparel project?",
   description: "Tell us what you need and we will guide you through product selection, customization, and quoting.",
   buttonText: "Request a Quote",
-  buttonHref: "#quote",
+  buttonHref: "#quote-form",
   email: "contactorstextiles@gmail.com",
   tags: ["Premium blanks", "Full customization", "Fast support"]
 };

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useGoToQuoteForm } from '@/hooks/useGoToQuoteForm';
 
 export function Hero() {
+  const goToQuoteForm = useGoToQuoteForm();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -53,12 +55,13 @@ export function Hero() {
                 Browse Catalog
                 <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />
               </button>
-              <a
-                href="#quote"
+              <button
+                type="button"
+                onClick={() => goToQuoteForm()}
                 className="bg-white text-[#0A0A0A] px-8 py-4 text-base font-medium border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors rounded-sm"
               >
                 Request a Quote
-              </a>
+              </button>
             </div>
           </div>
 
